@@ -18,13 +18,14 @@ class Article:
 
     @title.setter
     def title(self, new_title):
-        if not hasattr(self, '_title'):
-            if isinstance(new_title, str) and 5 <= len(new_title) <= 50:
-                self._title = new_title
+          if not hasattr(self, "_title"):
+            if type(new_title) == str:
+                if 5 <= len(new_title) <= 50:
+                    self._title = new_title
+                else:
+                    raise ValueError("Title must be between 5 and 50 characters")
             else:
-                raise ValueError("Title must be between 5 and 50 characters")
-        else:
-            raise AttributeError("Title cannot be changed after it is set")
+                raise TypeError("Name must be a string")
 
     @property
     def author(self):
@@ -77,8 +78,13 @@ class Author:
         return list({article.magazine for article in self.articles()})
 
     def add_article(self, magazine, title):
-        new_article = Article(self, magazine, title)
-        return new_article
+        if isinstance(magazine, Magazine) and isinstance(title, str):
+            new_article = Article(self, magazine, title)
+            new_article.author = self
+            return new_article
+        else:
+            raise ValueError("Invalid arguments for creating an article")
+
 
     def topic_areas(self):
        
