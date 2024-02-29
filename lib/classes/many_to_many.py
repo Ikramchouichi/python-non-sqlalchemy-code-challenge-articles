@@ -94,10 +94,13 @@ class Author:
 
 
 class Magazine:
+    _all_magazines = []  # Class variable to keep track of all magazines
+
     def __init__(self, name, category):
         self._name = name
         self._category = category
         self._articles = []
+        Magazine._all_magazines.append(self)  # Add the new instance to the list of all magazines
 
     @property
     def name(self):
@@ -128,29 +131,24 @@ class Magazine:
         return list({article.author for article in self._articles})
 
     def article_titles(self):
-
         titles = [article.title for article in self.articles()]
-        
-        if not titles:
-            return None
-        else:
-            return titles
+        return None if not titles else titles
 
     def contributing_authors(self):
-       
         author_counts = {}
-
         for article in self.articles():
-    
             if article.author in author_counts:
                 author_counts[article.author] += 1
             else:
                 author_counts[article.author] = 1
-
-       
         contributing_authors = [author for author, count in author_counts.items() if count > 2]
-
         return None if not contributing_authors else contributing_authors
 
+    @classmethod
+    def top_publisher(cls):
+        if not cls._all_magazines:
+            return None
+        return max(cls._all_magazines, key=lambda magazine: len(magazine.articles()), default=None)
+
     def __repr__(self):
-        return f'<Article title="{self._title}", author="{self._author.name}", magazine="{self._magazine.name}">'
+        return f'<Magazine name="{self._name}", category="{self._category}">'
